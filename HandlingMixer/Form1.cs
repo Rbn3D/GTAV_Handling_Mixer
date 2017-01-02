@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HandlingMixer.Controls.Datagrid;
 
 namespace HnadlingMixer
 {
@@ -23,15 +24,14 @@ namespace HnadlingMixer
         {
             InitializeComponent();
 
-            mixPanel.AutoScroll = true;
-            mixPanel.FlowDirection = FlowDirection.TopDown;
-            mixPanel.WrapContents = false;
+            InitializeDataGrid();
+        }
 
-            foreach(string handlingProp in Metadata.getHandlingProperties())
-            {
-                mixPanel.Controls.Add(new MixControl(handlingProp));
-            }
+        private void InitializeDataGrid()
+        {
+            // @ TODO
 
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)

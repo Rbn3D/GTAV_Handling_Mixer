@@ -38,16 +38,22 @@
             this.labelA = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.mixGroup = new System.Windows.Forms.GroupBox();
+            this.datagrid = new System.Windows.Forms.DataGridView();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.mixPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.MixBtn = new System.Windows.Forms.Button();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.HandlingPropertyCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataTypeColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.mixTypeColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.mixControlColumn = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.finalMixFactor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.mixGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.datagrid)).BeginInit();
             this.panel3.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.SuspendLayout();
@@ -151,9 +157,9 @@
             // 
             // mixGroup
             // 
+            this.mixGroup.Controls.Add(this.datagrid);
             this.mixGroup.Controls.Add(this.label4);
             this.mixGroup.Controls.Add(this.textBox1);
-            this.mixGroup.Controls.Add(this.mixPanel);
             this.mixGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mixGroup.Location = new System.Drawing.Point(0, 182);
             this.mixGroup.Name = "mixGroup";
@@ -162,6 +168,25 @@
             this.mixGroup.TabStop = false;
             this.mixGroup.Text = "Mix rules";
             this.mixGroup.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // datagrid
+            // 
+            this.datagrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.datagrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.datagrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.datagrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.datagrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.HandlingPropertyCol,
+            this.dataTypeColumn,
+            this.mixTypeColumn,
+            this.mixControlColumn,
+            this.finalMixFactor});
+            this.datagrid.Location = new System.Drawing.Point(0, 46);
+            this.datagrid.Name = "datagrid";
+            this.datagrid.Size = new System.Drawing.Size(533, 227);
+            this.datagrid.TabIndex = 3;
             // 
             // label4
             // 
@@ -175,23 +200,10 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Location = new System.Drawing.Point(54, 20);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(200, 20);
+            this.textBox1.Size = new System.Drawing.Size(167, 20);
             this.textBox1.TabIndex = 1;
-            // 
-            // mixPanel
-            // 
-            this.mixPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.mixPanel.Location = new System.Drawing.Point(-4, 45);
-            this.mixPanel.Name = "mixPanel";
-            this.mixPanel.Size = new System.Drawing.Size(533, 227);
-            this.mixPanel.TabIndex = 0;
-            this.mixPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MixPanel_Paint);
             // 
             // panel3
             // 
@@ -224,13 +236,41 @@
             this.mainPanel.Size = new System.Drawing.Size(533, 495);
             this.mainPanel.TabIndex = 3;
             // 
-            // HandlingMixer
+            // HandlingPropertyCol
+            // 
+            this.HandlingPropertyCol.HeaderText = "Handling property";
+            this.HandlingPropertyCol.Name = "HandlingPropertyCol";
+            this.HandlingPropertyCol.ReadOnly = true;
+            // 
+            // dataTypeColumn
+            // 
+            this.dataTypeColumn.HeaderText = "Data type";
+            this.dataTypeColumn.Name = "dataTypeColumn";
+            this.dataTypeColumn.ReadOnly = true;
+            // 
+            // mixTypeColumn
+            // 
+            this.mixTypeColumn.HeaderText = "Mix Type";
+            this.mixTypeColumn.Name = "mixTypeColumn";
+            // 
+            // mixControlColumn
+            // 
+            this.mixControlColumn.HeaderText = "Mix control";
+            this.mixControlColumn.Name = "mixControlColumn";
+            // 
+            // finalMixFactor
+            // 
+            this.finalMixFactor.HeaderText = "Final mix factor/Fixed Value";
+            this.finalMixFactor.Name = "finalMixFactor";
+            this.finalMixFactor.ReadOnly = true;
+            // 
+            // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(533, 495);
             this.Controls.Add(this.mainPanel);
             this.MinimumSize = new System.Drawing.Size(549, 534);
-            this.Name = "HandlingMixer";
+            this.Name = "Form1";
             this.Text = "HandlingMixer (for GTA V)";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
@@ -240,6 +280,7 @@
             this.panel1.PerformLayout();
             this.mixGroup.ResumeLayout(false);
             this.mixGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.datagrid)).EndInit();
             this.panel3.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -260,10 +301,15 @@
         private System.Windows.Forms.GroupBox mixGroup;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button MixBtn;
-        private System.Windows.Forms.FlowLayoutPanel mixPanel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel mainPanel;
+        private System.Windows.Forms.DataGridView datagrid;
+        private System.Windows.Forms.DataGridViewTextBoxColumn HandlingPropertyCol;
+        private System.Windows.Forms.DataGridViewComboBoxColumn dataTypeColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn mixTypeColumn;
+        private System.Windows.Forms.DataGridViewButtonColumn mixControlColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn finalMixFactor;
     }
 }
 
