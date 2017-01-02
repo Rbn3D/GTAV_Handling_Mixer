@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApplication1.Controls.Datagrid;
 
 namespace HandlingMixer.Controls.Datagrid
 {
@@ -26,11 +27,11 @@ namespace HandlingMixer.Controls.Datagrid
             // Use the default row value when Value property is null.
             if (this.Value == null)
             {
-                ctl.Value = (float)this.DefaultNewRowValue;
+                ctl.Value = (int)this.DefaultNewRowValue;
             }
             else
             {
-                ctl.Value = (float)this.Value;
+                ctl.Value = (int)this.Value;
             }
         }
 
@@ -49,7 +50,7 @@ namespace HandlingMixer.Controls.Datagrid
             {
                 // Return the type of the value that SliderCell contains.
 
-                return typeof(float);
+                return typeof(int);
             }
         }
 
@@ -57,7 +58,7 @@ namespace HandlingMixer.Controls.Datagrid
         {
             get
             {
-                return 0.5f;
+                return 50000;
             }
         }
     }

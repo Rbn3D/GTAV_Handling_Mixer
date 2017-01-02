@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HandlingMixer.Controls.Datagrid;
+using static HandlingMixer.Metadata;
 
 namespace HnadlingMixer
 {
@@ -19,6 +20,8 @@ namespace HnadlingMixer
     {
         public string Apath;
         public string Bpath;
+
+        public List<PropData> handlingProperties;
 
         public Form1()
         {
@@ -29,9 +32,25 @@ namespace HnadlingMixer
 
         private void InitializeDataGrid()
         {
-            // @ TODO
+            handlingProperties = Metadata.getHandlingProperties();
 
-            
+            datagrid.AutoGenerateColumns = false;
+
+            Propname.ValueType = typeof(String);
+            Propname.ReadOnly = true;
+
+            dataType.ValueType = typeof(HandlingDataType);
+            dataType.DataSource = Enum.GetValues(typeof(HandlingDataType));
+            dataType.ReadOnly = true;
+
+            mixType.ValueType = typeof(MixType);
+            mixType.DataSource = Enum.GetValues(typeof(MixType));
+            mixType.ReadOnly = false;
+
+            mixedValue.ValueType = typeof(float);
+            mixedValue.ReadOnly = false;
+
+            datagrid.DataSource = handlingProperties;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -102,13 +121,7 @@ namespace HnadlingMixer
 
         private void MixBtn_Click(object sender, EventArgs e)
         {
-            List<PropData> propList = new List<PropData>(mixPanel.Controls.Count);
-            foreach(MixControl mc in mixPanel.Controls)
-            {
-                propList.Add(mc.toPropData());
-            }
-
-            var mixer = new HandlingXmlMixer(Apath, Bpath, propList);
+            var mixer = new HandlingXmlMixer(Apath, Bpath, handlingProperties);
 
             SaveFileDialog saveDlg = new SaveFileDialog();
 
@@ -123,6 +136,24 @@ namespace HnadlingMixer
                 MessageBox.Show("Done!");
             }
             
+        }
+
+        private void datagrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if(String.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                datagrid.DataSource = handlingProperties;
+            } else
+            {
+                var filter = textBox1.Text;
+
+                datagrid.DataSource = handlingProperties.Where(p => p.propName.ToLowerInvariant().Contains(filter.ToLowerInvariant())).ToList();
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static HandlingMixer.Metadata;
 
 namespace HandlingMixer
 {
@@ -61,12 +62,7 @@ namespace HandlingMixer
                     string[] attributesToMix = { "value" };
                     string[] attributesToMixVector = { "x","y","z" };
 
-                    // @TODO: check "value" vs "x" "y" "z" attributes in a fancier way (avoid try catch for best performance)
-                    try
-                    {
-                        var test = carA.Elements(pName).First().Attributes("value").First().Value;
-                    }
-                    catch (Exception e)
+                    if(mixProp.dataType == HandlingDataType.Vector3)
                     {
                         attributesToMix = attributesToMixVector;
                     }
@@ -93,6 +89,12 @@ namespace HandlingMixer
                         else if (pDataType == MixType.UseB)
                         {
                             mixedValue = BValue;
+                        }
+
+                        // round to int if handling data type should be integer
+                        if(mixProp.dataType == HandlingDataType.Int && pDataType == MixType.Mix || pDataType == MixType.FixedValue)
+                        {
+                            mixedValue = (float)Math.Round((double)mixedValue);
                         }
 
                         mixItem.Element(pName).Attribute(att).Value = mixedValue.ToString(CultureInfo.InvariantCulture);

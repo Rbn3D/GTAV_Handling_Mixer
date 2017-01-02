@@ -39,16 +39,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.mixGroup = new System.Windows.Forms.GroupBox();
             this.datagrid = new System.Windows.Forms.DataGridView();
+            this.Propname = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.mixType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.mixedValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.MixBtn = new System.Windows.Forms.Button();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.HandlingPropertyCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataTypeColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.mixTypeColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.mixControlColumn = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.finalMixFactor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -171,6 +170,8 @@
             // 
             // datagrid
             // 
+            this.datagrid.AllowUserToAddRows = false;
+            this.datagrid.AllowUserToDeleteRows = false;
             this.datagrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -178,15 +179,44 @@
             this.datagrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.datagrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.datagrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.HandlingPropertyCol,
-            this.dataTypeColumn,
-            this.mixTypeColumn,
-            this.mixControlColumn,
-            this.finalMixFactor});
+            this.Propname,
+            this.dataType,
+            this.mixType,
+            this.mixedValue});
             this.datagrid.Location = new System.Drawing.Point(0, 46);
             this.datagrid.Name = "datagrid";
-            this.datagrid.Size = new System.Drawing.Size(533, 227);
+            this.datagrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.datagrid.Size = new System.Drawing.Size(530, 227);
             this.datagrid.TabIndex = 3;
+            this.datagrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagrid_CellContentClick);
+            // 
+            // Propname
+            // 
+            this.Propname.DataPropertyName = "propName";
+            this.Propname.HeaderText = "Handling property";
+            this.Propname.Name = "Propname";
+            // 
+            // dataType
+            // 
+            this.dataType.DataPropertyName = "dataType";
+            this.dataType.HeaderText = "Data type";
+            this.dataType.Name = "dataType";
+            this.dataType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // mixType
+            // 
+            this.mixType.DataPropertyName = "mixType";
+            this.mixType.HeaderText = "Mix type";
+            this.mixType.Name = "mixType";
+            this.mixType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.mixType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // mixedValue
+            // 
+            this.mixedValue.DataPropertyName = "mixedValue";
+            this.mixedValue.HeaderText = "Mixed Value";
+            this.mixedValue.Name = "mixedValue";
             // 
             // label4
             // 
@@ -204,6 +234,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(167, 20);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // panel3
             // 
@@ -235,34 +266,6 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(533, 495);
             this.mainPanel.TabIndex = 3;
-            // 
-            // HandlingPropertyCol
-            // 
-            this.HandlingPropertyCol.HeaderText = "Handling property";
-            this.HandlingPropertyCol.Name = "HandlingPropertyCol";
-            this.HandlingPropertyCol.ReadOnly = true;
-            // 
-            // dataTypeColumn
-            // 
-            this.dataTypeColumn.HeaderText = "Data type";
-            this.dataTypeColumn.Name = "dataTypeColumn";
-            this.dataTypeColumn.ReadOnly = true;
-            // 
-            // mixTypeColumn
-            // 
-            this.mixTypeColumn.HeaderText = "Mix Type";
-            this.mixTypeColumn.Name = "mixTypeColumn";
-            // 
-            // mixControlColumn
-            // 
-            this.mixControlColumn.HeaderText = "Mix control";
-            this.mixControlColumn.Name = "mixControlColumn";
-            // 
-            // finalMixFactor
-            // 
-            this.finalMixFactor.HeaderText = "Final mix factor/Fixed Value";
-            this.finalMixFactor.Name = "finalMixFactor";
-            this.finalMixFactor.ReadOnly = true;
             // 
             // Form1
             // 
@@ -305,11 +308,10 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.DataGridView datagrid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn HandlingPropertyCol;
-        private System.Windows.Forms.DataGridViewComboBoxColumn dataTypeColumn;
-        private System.Windows.Forms.DataGridViewComboBoxColumn mixTypeColumn;
-        private System.Windows.Forms.DataGridViewButtonColumn mixControlColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn finalMixFactor;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Propname;
+        private System.Windows.Forms.DataGridViewComboBoxColumn dataType;
+        private System.Windows.Forms.DataGridViewComboBoxColumn mixType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn mixedValue;
     }
 }
 

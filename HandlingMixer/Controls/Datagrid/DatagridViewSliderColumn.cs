@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace HandlingMixer.Controls.Datagrid
 {
-    class DatagridViewSliderColumn : DataGridViewColumn
+    public class DatagridViewSliderColumn : DataGridViewColumn
     {
         public DatagridViewSliderColumn() : base(new SliderCell())
         {
