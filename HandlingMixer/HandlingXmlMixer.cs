@@ -1,6 +1,7 @@
 ﻿using HandlingMixer;
 using HandlingMixer.Controls;
 using HandlingMixer.Data;
+using SimpleExpressionEvaluator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -91,8 +92,10 @@ namespace HandlingMixer
                             mixedValue = BValue;
                         }
 
+                        mixedValue = processAditionalMathColumns(mixedValue, mixProp);
+
                         // round to int if handling data type should be integer
-                        if(mixProp.dataType == HandlingDataType.Int && pDataType == MixType.Mix || pDataType == MixType.FixedValue)
+                        if(mixProp.dataType == HandlingDataType.Int)
                         {
                             mixedValue = (float)Math.Round((double)mixedValue);
                         }
@@ -109,5 +112,55 @@ namespace HandlingMixer
 " + xml;
         }
 
+        // Process Offset, Multiplier, Custom formula, Minimum, Maximum columns
+        private float processAditionalMathColumns(float mixedValue, PropData mixProp)
+        {
+            var offset = mixProp.valueOffset;
+            var multiplier = mixProp.ValueMultiplier;
+            var customFormula = mixProp.customFormula;
+            var min = mixProp.MinimumValue;
+            var max = mixProp.MaximumValue;
+
+            // offset
+            mixedValue += offset;
+
+            //multiplier
+            mixedValue *= multiplier;
+
+            // custom formula
+            if(!String.IsNullOrWhiteSpace(customFormula))
+            {
+                dynamic ev = new ExpressionEvaluator(CultureInfo.InvariantCulture);
+
+                Decimal x = 0;
+                Decimal.TryParse(mixedValue.ToString(CultureInfo.InvariantCulture), out x);
+
+                mixedValue = ev.Evaluate(customFormula, x: x);
+            }
+
+            // min
+            if(!String.IsNullOrWhiteSpace(min))
+            {
+                var floatMin = MathUtils.FloatFromString(min);
+
+                if(mixedValue < floatMin)
+                {
+                    mixedValue = floatMin;
+                }
+            }
+
+            // max
+            if (!String.IsNullOrWhiteSpace(max))
+            {
+                var floatMax = MathUtils.FloatFromString(max);
+
+                if (mixedValue > floatMax)
+                {
+                    mixedValue = floatMax;
+                }
+            }
+
+            return mixedValue;
+        }
     }
 }

@@ -10,6 +10,16 @@ namespace HandlingMixer
 {
     public class Metadata
     {
+        public const string PROPNAME_COL = "propName";
+        public const string DATATYPE_COL = "dataType";
+        public const string MIXTYPE_COL     = "mixType";
+        public const string MIXEDVAL_COL    = "mixedValue";
+        public const string VALOFFSET_COL   = "valueOffset";
+        public const string VALMULT_COL     = "valueMultiplier";
+        public const string CUSTOMFORM_COL  = "customFormula";
+        public const string MINVAL_COL      = "MinimumValue";
+        public const string MAXVAL_COL      = "MaximumValue";
+
         public enum MixType
         {
             Mix,
@@ -73,6 +83,83 @@ namespace HandlingMixer
             properties.Add(new PropData("fSeatOffsetDistZ", HandlingDataType.Float, MixType.Mix, 0.5f));
 
             return properties;
+        }
+
+        public static string getHelpStringForColumn(string columnName)
+        {
+
+            if (columnName == MIXTYPE_COL)
+            {
+                return
+                    @"This value determine how values from A and B handling files will be mixed for this handling property.
+
+Possible values are:
+ - Mix: Use to linearly interpolate value between A and B handling
+ - Use A: Take value from A handling (no interpolation)
+ - Use B: Take value from B handling (no interpolation)
+ - Fixed Value: (NOT RECOMENDED) Specify a fixed value for this property (this will effectively make all vehicles have the same value for this property)
+";
+            } 
+            else if(columnName == MIXEDVAL_COL)
+            {
+                return @"Float
+This value only applies for ""Mix"" and ""Fixed Value"" mix types:
+
+ - When mixType = ""Mix"": This value is the interpolation factor between A and B, where 0.0 means 100% A, 0.5 means perfect mix, and 1 means 100% B. Interpolation is not clamped, so values below 0.0 and above 1.0 are also supported.
+ - When mixType = ""FixedValue"": This value will be set directly to handling (the one you type)
+";
+            }
+            else if (columnName == VALOFFSET_COL)
+            {
+                return @"Float
+
+A float value, possitive or negative, that will be added to the mix value
+(possive will sum, negative wil substract, 0 won't have any effect)
+";
+            }
+            else if (columnName == VALMULT_COL)
+            {
+                return @"Float
+
+A float value, usually positive, that will be multiplied to the mix value
+(higher than 1.0 increases final value, lower than 1.0 will desecrease value, 0 will set value to zero, lower than 0 is not recommended, 1.0 won't have any effect)
+";
+            }
+            else if (columnName == CUSTOMFORM_COL)
+            {
+                return @"Text (can be empty)
+
+A custom math formula that (if set) will be evaluated to calculate the final value. You have to use ""x"" variable, which stores the value for this property.
+If you don't use variables in the formula, the generated value may be the same for all vehicles.
+
+Only set this value if the other columns (offset, multiplier, etc) cannot suit your needs. Also, use only if you know what you are doing.
+
+Defined variables are:
+ - x: The current calculated value for this property (this is, the value already mixed and with offset and multiplier applied
+ - a: The value in handling A for this property
+ - b: The value in handling B for this property
+
+Example: 
+   (b * 2) + 100
+   This example takes value from handling b, multiplies it by 2, and then add 100 to it
+
+Please note that very complex math operations may not be supported, if you type something that the math evaluator cannot parse, an error message will be shown";
+
+            }
+            else if (columnName == MINVAL_COL)
+            {
+                return @"Float (can be empty)
+
+Setting this value will make the calculated final value to never be lower than the minimum set here";
+            }
+            else if (columnName == MAXVAL_COL)
+            {
+                return @"Float (can be empty)
+
+Setting this value will make the calculated final value to never be higher than the maximum set here";
+            }
+
+            return "";
         }
     }
 }
