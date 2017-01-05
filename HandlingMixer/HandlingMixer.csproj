@@ -51,8 +51,9 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleExpressionEvaluator">
-      <HintPath>D:\Trabajo\Dev\Math-Expression-Evaluator\SimpleExpressionEvaluator\bin\Release\SimpleExpressionEvaluator.dll</HintPath>
+    <Reference Include="SimpleExpressionEvaluator, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\SimpleExpressionEvaluator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
