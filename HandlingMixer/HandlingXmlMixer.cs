@@ -92,7 +92,7 @@ namespace HandlingMixer
                             mixedValue = BValue;
                         }
 
-                        mixedValue = processAditionalMathColumns(mixedValue, mixProp);
+                        mixedValue = processAditionalMathColumns(mixedValue, AValue, BValue, mixProp);
 
                         // round to int if handling data type should be integer
                         if(mixProp.dataType == HandlingDataType.Int)
@@ -107,13 +107,13 @@ namespace HandlingMixer
             }
 
             var xml = MixXml.ToString();
-            return @"<?xml version=""1.0"" encoding=""UTF - 8""?>
+            return @"<?xml version=""1.0"" encoding=""UTF-8""?>
 
 " + xml;
         }
 
         // Process Offset, Multiplier, Custom formula, Minimum, Maximum columns
-        private float processAditionalMathColumns(float mixedValue, PropData mixProp)
+        private float processAditionalMathColumns(float mixedValue, float AValue, float BValue, PropData mixProp)
         {
             var offset = mixProp.valueOffset;
             var multiplier = mixProp.ValueMultiplier;
@@ -135,7 +135,7 @@ namespace HandlingMixer
                 Decimal x = 0;
                 Decimal.TryParse(mixedValue.ToString(CultureInfo.InvariantCulture), out x);
 
-                mixedValue = ev.Evaluate(customFormula, x: x);
+                mixedValue = ev.Evaluate(customFormula, x: x, a: AValue, b: BValue);
             }
 
             // min

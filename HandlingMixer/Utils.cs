@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace HandlingMixer
 {
@@ -25,7 +27,7 @@ namespace HandlingMixer
     public class DialogUtils
     {
 
-        public static DialogResult StringInputBox(string title, string promptText, ref string value)
+        public static DialogResult StringInputBox(string title, string promptText, ref string value, string tooltipHelp = "")
         {
             Form form = new Form();
             Label label = new Label();
@@ -62,12 +64,14 @@ namespace HandlingMixer
             form.AcceptButton = buttonOk;
             form.CancelButton = buttonCancel;
 
+            form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
+
             DialogResult dialogResult = form.ShowDialog();
             value = textBox.Text;
             return dialogResult;
         }
 
-        public static DialogResult EnumInputBox<T>(string title, string promptText, Type enumType, ref T value) where T : struct, IConvertible
+        public static DialogResult EnumInputBox<T>(string title, string promptText, Type enumType, ref T value, string tooltipHelp = "") where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)
             {
@@ -110,6 +114,8 @@ namespace HandlingMixer
             form.AcceptButton = buttonOk;
             form.CancelButton = buttonCancel;
 
+            form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
+
             DialogResult dialogResult = form.ShowDialog();
 
             Enum.TryParse<T>(enumBox.SelectedValue.ToString(), out value);
@@ -117,7 +123,7 @@ namespace HandlingMixer
             return dialogResult;
         }
 
-        public static DialogResult FloatInputBox(string title, string promptText, ref float value)
+        public static DialogResult FloatInputBox(string title, string promptText, ref float value, string tooltipHelp = "")
         {
             Form form = new Form();
             Label label = new Label();
@@ -170,6 +176,8 @@ namespace HandlingMixer
                 }
             };
 
+            form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
+
             DialogResult dialogResult = form.ShowDialog();
             value = MathUtils.FloatFromString(textBox.Text);
 
@@ -177,7 +185,7 @@ namespace HandlingMixer
         }
 
         // returns string with float value (allowing empty values)
-        public static DialogResult FloatAsStringInputBox(string title, string promptText, ref string value)
+        public static DialogResult FloatAsStringInputBox(string title, string promptText,  ref string value, string tooltipHelp = "")
         {
             Form form = new Form();
             Label label = new Label();
@@ -216,10 +224,20 @@ namespace HandlingMixer
             form.AcceptButton = buttonOk;
             form.CancelButton = buttonCancel;
 
+            form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
+
             DialogResult dialogResult = form.ShowDialog();
             value = textBox.Text;
 
             return dialogResult;
+        }
+
+        private static void Form_Shown(object sender, EventArgs e, string tooltipText)
+        {
+            var tt = new ToolTip();
+            tt.ToolTipTitle = "Info";
+            tt.ToolTipIcon = ToolTipIcon.Info;
+            tt.Show(tooltipText, sender as Form, 8, 139, 200000);
         }
 
         private static void TextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -252,5 +270,27 @@ namespace HandlingMixer
                 return "Value cannot be empty.";
             return "";
         };
+    }
+
+    public class IoUtils
+    {
+        public static T FromXML<T>(string xml)
+        {
+            using (StringReader stringReader = new StringReader(xml))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                return (T)serializer.Deserialize(stringReader);
+            }
+        }
+
+        public static string ToXML<T>(T obj)
+        {
+            using (StringWriter stringWriter = new StringWriter(new StringBuilder()))
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+                xmlSerializer.Serialize(stringWriter, obj);
+                return stringWriter.ToString();
+            }
+        }
     }
 }

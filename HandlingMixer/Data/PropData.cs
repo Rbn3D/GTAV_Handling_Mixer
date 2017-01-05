@@ -9,8 +9,14 @@ using static HandlingMixer.Metadata;
 
 namespace HandlingMixer.Data
 {
+    [Serializable]
     public class PropData
     {
+        public PropData()
+        {
+
+        }
+
         public PropData(string propName, HandlingDataType dataType, MixType mixType, float mixedValue)
         {
             this.propName = propName;

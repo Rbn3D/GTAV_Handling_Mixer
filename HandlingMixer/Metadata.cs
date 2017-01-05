@@ -87,11 +87,15 @@ namespace HandlingMixer
 
         public static string getHelpStringForColumn(string columnName)
         {
+            if(!Settings.ShowHelpTooltips)
+            {
+                return "";
+            }
 
             if (columnName == MIXTYPE_COL)
             {
                 return
-                    @"This value determine how values from A and B handling files will be mixed for this handling property.
+                    @"Mix type: This value determine how values from A and B handling files will be mixed for this handling property.
 
 Possible values are:
  - Mix: Use to linearly interpolate value between A and B handling
@@ -102,7 +106,7 @@ Possible values are:
             } 
             else if(columnName == MIXEDVAL_COL)
             {
-                return @"Float
+                return @"Mixed Value (Float)
 This value only applies for ""Mix"" and ""Fixed Value"" mix types:
 
  - When mixType = ""Mix"": This value is the interpolation factor between A and B, where 0.0 means 100% A, 0.5 means perfect mix, and 1 means 100% B. Interpolation is not clamped, so values below 0.0 and above 1.0 are also supported.
@@ -111,7 +115,7 @@ This value only applies for ""Mix"" and ""Fixed Value"" mix types:
             }
             else if (columnName == VALOFFSET_COL)
             {
-                return @"Float
+                return @"Value offset (Float)
 
 A float value, possitive or negative, that will be added to the mix value
 (possive will sum, negative wil substract, 0 won't have any effect)
@@ -119,7 +123,7 @@ A float value, possitive or negative, that will be added to the mix value
             }
             else if (columnName == VALMULT_COL)
             {
-                return @"Float
+                return @"Value multiplier (Float)
 
 A float value, usually positive, that will be multiplied to the mix value
 (higher than 1.0 increases final value, lower than 1.0 will desecrease value, 0 will set value to zero, lower than 0 is not recommended, 1.0 won't have any effect)
@@ -127,7 +131,7 @@ A float value, usually positive, that will be multiplied to the mix value
             }
             else if (columnName == CUSTOMFORM_COL)
             {
-                return @"Text (can be empty)
+                return @"Custom Formula (String, can be empty)
 
 A custom math formula that (if set) will be evaluated to calculate the final value. You have to use ""x"" variable, which stores the value for this property.
 If you don't use variables in the formula, the generated value may be the same for all vehicles.
@@ -135,7 +139,7 @@ If you don't use variables in the formula, the generated value may be the same f
 Only set this value if the other columns (offset, multiplier, etc) cannot suit your needs. Also, use only if you know what you are doing.
 
 Defined variables are:
- - x: The current calculated value for this property (this is, the value already mixed and with offset and multiplier applied
+ - x: The current calculated value for this property (this is, the value already mixed and with offset and multiplier applied)
  - a: The value in handling A for this property
  - b: The value in handling B for this property
 
@@ -148,13 +152,13 @@ Please note that very complex math operations may not be supported, if you type 
             }
             else if (columnName == MINVAL_COL)
             {
-                return @"Float (can be empty)
+                return @"Minimum Value (Float, can be empty)
 
 Setting this value will make the calculated final value to never be lower than the minimum set here";
             }
             else if (columnName == MAXVAL_COL)
             {
-                return @"Float (can be empty)
+                return @"Maximum Value (Float, can be empty)
 
 Setting this value will make the calculated final value to never be higher than the maximum set here";
             }

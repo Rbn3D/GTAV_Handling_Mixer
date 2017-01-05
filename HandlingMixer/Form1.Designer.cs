@@ -68,6 +68,9 @@
             this.setMinimumValueMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.selectAllBtn = new System.Windows.Forms.Button();
+            this.SelectNoneBtn = new System.Windows.Forms.Button();
+            this.showTooltipsCB = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -174,6 +177,9 @@
             // 
             // mixGroup
             // 
+            this.mixGroup.Controls.Add(this.showTooltipsCB);
+            this.mixGroup.Controls.Add(this.SelectNoneBtn);
+            this.mixGroup.Controls.Add(this.selectAllBtn);
             this.mixGroup.Controls.Add(this.setValueSelBtn);
             this.mixGroup.Controls.Add(this.setTypeSelBtn);
             this.mixGroup.Controls.Add(this.selectedLabel);
@@ -443,13 +449,49 @@
             this.helpTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.helpTooltip.ToolTipTitle = "Info";
             // 
+            // selectAllBtn
+            // 
+            this.selectAllBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.selectAllBtn.Location = new System.Drawing.Point(417, 17);
+            this.selectAllBtn.Name = "selectAllBtn";
+            this.selectAllBtn.Size = new System.Drawing.Size(74, 23);
+            this.selectAllBtn.TabIndex = 7;
+            this.selectAllBtn.Text = "Select All";
+            this.selectAllBtn.UseVisualStyleBackColor = true;
+            this.selectAllBtn.Click += new System.EventHandler(this.selectAllBtn_Click);
+            // 
+            // SelectNoneBtn
+            // 
+            this.SelectNoneBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.SelectNoneBtn.Location = new System.Drawing.Point(498, 17);
+            this.SelectNoneBtn.Name = "SelectNoneBtn";
+            this.SelectNoneBtn.Size = new System.Drawing.Size(74, 23);
+            this.SelectNoneBtn.TabIndex = 8;
+            this.SelectNoneBtn.Text = "Select None";
+            this.SelectNoneBtn.UseVisualStyleBackColor = true;
+            this.SelectNoneBtn.Click += new System.EventHandler(this.SelectNoneBtn_Click);
+            // 
+            // showTooltipsCB
+            // 
+            this.showTooltipsCB.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.showTooltipsCB.AutoSize = true;
+            this.showTooltipsCB.Checked = true;
+            this.showTooltipsCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showTooltipsCB.Location = new System.Drawing.Point(289, 22);
+            this.showTooltipsCB.Name = "showTooltipsCB";
+            this.showTooltipsCB.Size = new System.Drawing.Size(119, 17);
+            this.showTooltipsCB.TabIndex = 9;
+            this.showTooltipsCB.Text = "Display help tooltips";
+            this.showTooltipsCB.UseVisualStyleBackColor = true;
+            this.showTooltipsCB.CheckedChanged += new System.EventHandler(this.showTooltipsCB_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(903, 536);
             this.Controls.Add(this.mainPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(750, 575);
+            this.MinimumSize = new System.Drawing.Size(800, 575);
             this.Name = "Form1";
             this.Text = "HandlingMixer (for GTA V)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -509,6 +551,9 @@
         private System.Windows.Forms.Button saveMixSetupBtn;
         private System.Windows.Forms.Button loadMixSetupBtn;
         private System.Windows.Forms.ToolTip helpTooltip;
+        private System.Windows.Forms.Button SelectNoneBtn;
+        private System.Windows.Forms.Button selectAllBtn;
+        private System.Windows.Forms.CheckBox showTooltipsCB;
     }
 }
 

@@ -65,11 +65,6 @@ namespace HnadlingMixer
             datagrid.ShowCellToolTips = false;
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void btnFileA_Click(object sender, EventArgs e)
         {
             string path;
@@ -104,8 +99,6 @@ namespace HnadlingMixer
             }
             else
             {
-                var mixer = new HandlingXmlMixer(Apath, Bpath, handlingProperties);
-
                 SaveFileDialog saveDlg = new SaveFileDialog();
 
                 saveDlg.Filter = "Handling .meta files (*.meta)|*.meta";
@@ -113,6 +106,8 @@ namespace HnadlingMixer
                 if (saveDlg.ShowDialog() == DialogResult.OK)
                 {
                     var path = saveDlg.FileName;
+
+                    var mixer = new HandlingXmlMixer(Apath, Bpath, handlingProperties);
                     var resultXml = mixer.generateMixedHandling();
 
                     File.WriteAllText(path, resultXml);
@@ -188,24 +183,10 @@ namespace HnadlingMixer
 
         }
 
-        private void setValueOffsetMenu_Click(object sender, EventArgs e)
-        {
-            float offset = 0.0f;
-            var result = DialogUtils.FloatInputBox("Set offset value", "Set offset value for selected items", ref offset);
-
-            if (result == DialogResult.OK)
-            {
-                foreach (DataGridViewRow row in datagrid.SelectedRows)
-                {
-                    row.Cells["valueOffsetCol"].Value = offset;
-                }
-            }
-        }
-
         private void setMixedValue_Click(object sender, EventArgs e)
         {
             float mixedValue = 0.5f;
-            var result = DialogUtils.FloatInputBox("Set mixed value", "Choose mix type for selected items", ref mixedValue);
+            var result = DialogUtils.FloatInputBox("Set mixed value", "Choose mix type for selected items", ref mixedValue, Metadata.getHelpStringForColumn(Metadata.MIXEDVAL_COL));
 
             if (result == DialogResult.OK)
             {
@@ -216,10 +197,24 @@ namespace HnadlingMixer
             }
         }
 
+        private void setValueOffsetMenu_Click(object sender, EventArgs e)
+        {
+            float offset = 0.0f;
+            var result = DialogUtils.FloatInputBox("Set offset value", "Set offset value for selected items", ref offset, Metadata.getHelpStringForColumn(Metadata.VALOFFSET_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["valueOffsetCol"].Value = offset;
+                }
+            }
+        }
+
         private void setMultiplierMenu_Click(object sender, EventArgs e)
         {
             float multiplier = 1.0f;
-            var result = DialogUtils.FloatInputBox("Set multiplier value", "Set offset value for selected items", ref multiplier);
+            var result = DialogUtils.FloatInputBox("Set multiplier value", "Set offset value for selected items", ref multiplier, Metadata.getHelpStringForColumn(Metadata.VALMULT_COL));
 
             if (result == DialogResult.OK)
             {
@@ -233,7 +228,7 @@ namespace HnadlingMixer
         private void setCustomFormulaMenu_Click(object sender, EventArgs e)
         {
             string customFormula = "";
-            var result = DialogUtils.StringInputBox("Set custom formula", "Set custom formula for selected items", ref customFormula);
+            var result = DialogUtils.StringInputBox("Set custom formula", "Set custom formula for selected items", ref customFormula, Metadata.getHelpStringForColumn(Metadata.CUSTOMFORM_COL));
 
             if (result == DialogResult.OK)
             {
@@ -247,7 +242,7 @@ namespace HnadlingMixer
         private void setMinimumValueMenu_Click(object sender, EventArgs e)
         {
             string minimum = "";
-            var result = DialogUtils.FloatAsStringInputBox("Set minimum value", "Set minimum for selected items", ref minimum);
+            var result = DialogUtils.FloatAsStringInputBox("Set minimum value", "Set minimum for selected items", ref minimum, Metadata.getHelpStringForColumn(Metadata.MINVAL_COL));
 
             if (result == DialogResult.OK)
             {
@@ -261,7 +256,7 @@ namespace HnadlingMixer
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             string maximum = "";
-            var result = DialogUtils.FloatAsStringInputBox("Set maximum value", "Set maximum for selected items", ref maximum);
+            var result = DialogUtils.FloatAsStringInputBox("Set maximum value", "Set maximum for selected items", ref maximum, Metadata.getHelpStringForColumn(Metadata.MAXVAL_COL));
 
             if (result == DialogResult.OK)
             {
@@ -274,14 +269,50 @@ namespace HnadlingMixer
 
         private void loadMixSetupBtn_Click(object sender, EventArgs e)
         {
-            // Load XML and set isDatagridDirty to false if successful
-            //isDatagridDirty = false;
+            // TODO Better XML handling
+
+            string path;
+            OpenFileDialog file = new OpenFileDialog();
+            file.Filter = "Mix setup .xml files (*.xml)|*.xml";
+            if (file.ShowDialog() == DialogResult.OK)
+            {
+                path = file.FileName;
+
+                handlingProperties = IoUtils.FromXML<List<PropData>>(File.ReadAllText(path));
+                datagrid.DataSource = handlingProperties;
+
+                isDatagridDirty = false;
+            }
         }
 
         private void saveMixSetupBtn_Click(object sender, EventArgs e)
         {
             // Save XML and set isDatagridDirty to false if successful
-            //isDatagridDirty = false;
+
+            SaveMixSetup();
+        }
+
+        private bool SaveMixSetup()
+        {
+            SaveFileDialog saveDlg = new SaveFileDialog();
+
+            saveDlg.Filter = "Mix setup .xml files (*.xml)|*.xml";
+            saveDlg.FileName = "mixSetup.xml";
+            if (saveDlg.ShowDialog() == DialogResult.OK)
+            {
+                var path = saveDlg.FileName;
+
+                var resultXml = IoUtils.ToXML<List<PropData>>(handlingProperties);
+
+                File.WriteAllText(path, resultXml);
+                MessageBox.Show("File saved");
+
+                isDatagridDirty = false;
+
+                return true;
+            }
+
+            return false;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -300,7 +331,10 @@ namespace HnadlingMixer
                     
                     if(result == DialogResult.Yes)
                     {
-                        // TODO Save XML and un-cancel event if successful
+                        if(SaveMixSetup())
+                        {
+                            e.Cancel = false;
+                        }
                     }
                 }
             }
@@ -397,6 +431,21 @@ namespace HnadlingMixer
             {
                 helpTooltip.Hide(this);
             }
+        }
+
+        private void showTooltipsCB_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.ShowHelpTooltips = showTooltipsCB.Checked;
+        }
+
+        private void selectAllBtn_Click(object sender, EventArgs e)
+        {
+            datagrid.SelectAll();
+        }
+
+        private void SelectNoneBtn_Click(object sender, EventArgs e)
+        {
+            datagrid.ClearSelection();
         }
     }
 }
