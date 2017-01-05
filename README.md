@@ -20,7 +20,8 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 * Load/save Mix setup: As well as generate a handling.meta file, Handling Mixer can also save the mix setup you did for later usage.
 
 ### Download 
-	(TODO)
+
+[Handling Mixer releases](https://github.com/Rbn3D/GTAV_Handling_Mixer/releases)
 
 ### How to compile from source
 
@@ -29,7 +30,8 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 	Visual Studio 2015
 
 * Dependencies (DLL References)
-	https://github.com/Rbn3D/Math-Expression-Evaluator
+
+https://github.com/Rbn3D/Math-Expression-Evaluator
 
 After fix references, just build solution and you're done
 
