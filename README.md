@@ -20,7 +20,8 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 * Load/save Mix setup: As well as generate a handling.meta file, Handling Mixer can also save the mix setup you did for later usage.
 
 ### Download 
-	https://github.com/Rbn3D/GTAV_Handling_Mixer/releases
+
+	[Handling Mixer releases](https://github.com/Rbn3D/GTAV_Handling_Mixer/releases)
 
 ### How to compile from source
 
