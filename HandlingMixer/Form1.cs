@@ -450,9 +450,17 @@ namespace HnadlingMixer
 
         private void datagrid_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            var col = datagrid[e.ColumnIndex, e.RowIndex].OwningColumn;
             var value = e.FormattedValue as String;
 
+            // don't try to validate over empty
+            if(String.IsNullOrWhiteSpace(value))
+            {
+                e.Cancel = false;
+                datagrid[e.ColumnIndex, e.RowIndex].ErrorText = null;
+                return;
+            }
+
+            var col = datagrid[e.ColumnIndex, e.RowIndex].OwningColumn;
             String errorMsg = null;
 
             if (col == MinimumValueCol || col == MaximumValueCol)
