@@ -1,6 +1,7 @@
 ﻿using HandlingMixer;
 using HandlingMixer.Controls;
 using HandlingMixer.Data;
+using SimpleExpressionEvaluator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static HandlingMixer.Metadata;
 
 namespace HandlingMixer
 {
@@ -61,12 +63,7 @@ namespace HandlingMixer
                     string[] attributesToMix = { "value" };
                     string[] attributesToMixVector = { "x","y","z" };
 
-                    // @TODO: check "value" vs "x" "y" "z" attributes in a fancier way (avoid try catch for best performance)
-                    try
-                    {
-                        var test = carA.Elements(pName).First().Attributes("value").First().Value;
-                    }
-                    catch (Exception e)
+                    if(mixProp.dataType == HandlingDataType.Vector3)
                     {
                         attributesToMix = attributesToMixVector;
                     }
@@ -95,6 +92,14 @@ namespace HandlingMixer
                             mixedValue = BValue;
                         }
 
+                        mixedValue = processAditionalMathColumns(mixedValue, AValue, BValue, mixProp);
+
+                        // round to int if handling data type should be integer
+                        if(mixProp.dataType == HandlingDataType.Int)
+                        {
+                            mixedValue = (float)Math.Round((double)mixedValue);
+                        }
+
                         mixItem.Element(pName).Attribute(att).Value = mixedValue.ToString(CultureInfo.InvariantCulture);
                     }
 
@@ -102,10 +107,60 @@ namespace HandlingMixer
             }
 
             var xml = MixXml.ToString();
-            return @"<?xml version=""1.0"" encoding=""UTF - 8""?>
+            return @"<?xml version=""1.0"" encoding=""UTF-8""?>
 
 " + xml;
         }
 
+        // Process Offset, Multiplier, Custom formula, Minimum, Maximum columns
+        private float processAditionalMathColumns(float mixedValue, float AValue, float BValue, PropData mixProp)
+        {
+            var offset = mixProp.valueOffset;
+            var multiplier = mixProp.ValueMultiplier;
+            var customFormula = mixProp.customFormula;
+            var min = mixProp.MinimumValue;
+            var max = mixProp.MaximumValue;
+
+            // offset
+            mixedValue += offset;
+
+            //multiplier
+            mixedValue *= multiplier;
+
+            // custom formula
+            if(!String.IsNullOrWhiteSpace(customFormula))
+            {
+                dynamic ev = new ExpressionEvaluator(CultureInfo.InvariantCulture);
+
+                Decimal x = 0;
+                Decimal.TryParse(mixedValue.ToString(CultureInfo.InvariantCulture), out x);
+
+                mixedValue = ev.Evaluate(customFormula, x: x, a: AValue, b: BValue);
+            }
+
+            // min
+            if(!String.IsNullOrWhiteSpace(min))
+            {
+                var floatMin = MathUtils.FloatFromString(min);
+
+                if(mixedValue < floatMin)
+                {
+                    mixedValue = floatMin;
+                }
+            }
+
+            // max
+            if (!String.IsNullOrWhiteSpace(max))
+            {
+                var floatMax = MathUtils.FloatFromString(max);
+
+                if (mixedValue > floatMax)
+                {
+                    mixedValue = floatMax;
+                }
+            }
+
+            return mixedValue;
+        }
     }
 }
