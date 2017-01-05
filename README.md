@@ -23,10 +23,12 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 	(TODO)
 
 ### How to compile from source
+
 * Requirements
 	Windows
 	Visual Studio 2015
-*Dependencies (DLL References)
+
+* Dependencies (DLL References)
 	https://github.com/Rbn3D/Math-Expression-Evaluator
 
 After fix references, just build solution and you're done
