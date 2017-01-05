@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HandlingMixer.Controls.Datagrid;
+using static HandlingMixer.Metadata;
+using System.Threading;
 
 namespace HnadlingMixer
 {
@@ -19,59 +22,47 @@ namespace HnadlingMixer
         public string Apath;
         public string Bpath;
 
+        public List<PropData> handlingProperties;
+
+        public bool isDatagridDirty = false;
+
         public Form1()
         {
+            // Invariant culture
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             InitializeComponent();
 
-            mixPanel.AutoScroll = true;
-            mixPanel.FlowDirection = FlowDirection.TopDown;
-            mixPanel.WrapContents = false;
+            InitializeDataGrid();
+        }
 
-            foreach(string handlingProp in Metadata.getHandlingProperties())
-            {
-                mixPanel.Controls.Add(new MixControl(handlingProp));
-            }
+        private void InitializeDataGrid()
+        {
+            handlingProperties = Metadata.getHandlingProperties();
 
+            datagrid.AutoGenerateColumns = false;
+
+            Propname.ValueType = typeof(String);
+            Propname.ReadOnly = true;
+
+            dataType.ValueType = typeof(HandlingDataType);
+            //dataType.DataSource = Enum.GetValues(typeof(HandlingDataType));
+            dataType.ReadOnly = true;
+
+            mixType.ValueType = typeof(MixType);
+            mixType.DataSource = Enum.GetValues(typeof(MixType));
+            mixType.ReadOnly = false;
+
+            mixedValue.ValueType = typeof(float);
+            mixedValue.ReadOnly = false;
+
+            datagrid.DataSource = handlingProperties;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-                
-        }
-
-        private void labelA_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBox2_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MixPanel_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
+            datagrid.Rows[0].Selected = false;
+            isDatagridDirty = false;
+            datagrid.ShowCellToolTips = false;
         }
 
         private void btnFileA_Click(object sender, EventArgs e)
@@ -102,27 +93,359 @@ namespace HnadlingMixer
 
         private void MixBtn_Click(object sender, EventArgs e)
         {
-            List<PropData> propList = new List<PropData>(mixPanel.Controls.Count);
-            foreach(MixControl mc in mixPanel.Controls)
+            if(String.IsNullOrEmpty(Apath) || String.IsNullOrEmpty(Bpath))
             {
-                propList.Add(mc.toPropData());
+                MessageBox.Show("Please select two different handling.meta files in the A and B slots first.");
             }
+            else
+            {
+                SaveFileDialog saveDlg = new SaveFileDialog();
 
-            var mixer = new HandlingXmlMixer(Apath, Bpath, propList);
+                saveDlg.Filter = "Handling .meta files (*.meta)|*.meta";
+                saveDlg.FileName = "handling.meta";
+                if (saveDlg.ShowDialog() == DialogResult.OK)
+                {
+                    var path = saveDlg.FileName;
 
+                    var mixer = new HandlingXmlMixer(Apath, Bpath, handlingProperties);
+                    var resultXml = mixer.generateMixedHandling();
+
+                    File.WriteAllText(path, resultXml);
+                    MessageBox.Show("Done!");
+                }
+            }
+        }
+
+        private void datagrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if(String.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                datagrid.DataSource = handlingProperties;
+            } else
+            {
+                var filter = textBox1.Text;
+
+                datagrid.DataSource = handlingProperties.Where(p => p.propName.ToLowerInvariant().Contains(filter.ToLowerInvariant())).ToList();
+            }
+        }
+
+        private void datagrid_SelectionChanged(object sender, EventArgs e)
+        {
+            var count = datagrid.SelectedRows.Count;
+
+            selectedLabel.Text = String.Format("Selected: {0} rows", count);
+
+            if(count == 0)
+            {
+                setTypeSelBtn.Enabled = false;
+                setValueSelBtn.Enabled = false;
+            } else
+            {
+                setTypeSelBtn.Enabled = true;
+                setValueSelBtn.Enabled = true;
+            }
+        }
+
+        private void setTypeSelBtn_Click(object sender, EventArgs e)
+        {
+            MixType mixType = MixType.Mix;
+            var result = DialogUtils.EnumInputBox<MixType>("Set mix type", "Choose mix type for selected items", typeof(MixType), ref mixType);
+
+            if(result == DialogResult.OK)
+            {
+                foreach(DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["mixType"].Value = mixType;
+                }
+            }
+        }
+
+        private void setValueSelBtn_Click(object sender, EventArgs e)
+        {
+            Point screenPoint = setValueSelBtn.PointToScreen(new Point(setValueSelBtn.Left, setValueSelBtn.Bottom));
+            if (screenPoint.Y + setValuesMenu.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                setValuesMenu.Show(setValueSelBtn, new Point(0, -setValuesMenu.Size.Height));
+            }
+            else
+            {
+                setValuesMenu.Show(setValueSelBtn, new Point(0, setValueSelBtn.Height));
+            }
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void setMixedValue_Click(object sender, EventArgs e)
+        {
+            float mixedValue = 0.5f;
+            var result = DialogUtils.FloatInputBox("Set mixed value", "Choose mix type for selected items", ref mixedValue, Metadata.getHelpStringForColumn(Metadata.MIXEDVAL_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["mixedValue"].Value = mixedValue;
+                }
+            }
+        }
+
+        private void setValueOffsetMenu_Click(object sender, EventArgs e)
+        {
+            float offset = 0.0f;
+            var result = DialogUtils.FloatInputBox("Set offset value", "Set offset value for selected items", ref offset, Metadata.getHelpStringForColumn(Metadata.VALOFFSET_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["valueOffsetCol"].Value = offset;
+                }
+            }
+        }
+
+        private void setMultiplierMenu_Click(object sender, EventArgs e)
+        {
+            float multiplier = 1.0f;
+            var result = DialogUtils.FloatInputBox("Set multiplier value", "Set offset value for selected items", ref multiplier, Metadata.getHelpStringForColumn(Metadata.VALMULT_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["ValueMultiplierCol"].Value = multiplier;
+                }
+            }
+        }
+
+        private void setCustomFormulaMenu_Click(object sender, EventArgs e)
+        {
+            string customFormula = "";
+            var result = DialogUtils.StringInputBox("Set custom formula", "Set custom formula for selected items", ref customFormula, Metadata.getHelpStringForColumn(Metadata.CUSTOMFORM_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["customFormulaCol"].Value = customFormula;
+                }
+            }
+        }
+
+        private void setMinimumValueMenu_Click(object sender, EventArgs e)
+        {
+            string minimum = "";
+            var result = DialogUtils.FloatAsStringInputBox("Set minimum value", "Set minimum for selected items", ref minimum, Metadata.getHelpStringForColumn(Metadata.MINVAL_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["MinimumValueCol"].Value = minimum;
+                }
+            }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            string maximum = "";
+            var result = DialogUtils.FloatAsStringInputBox("Set maximum value", "Set maximum for selected items", ref maximum, Metadata.getHelpStringForColumn(Metadata.MAXVAL_COL));
+
+            if (result == DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in datagrid.SelectedRows)
+                {
+                    row.Cells["MaximumValueCol"].Value = maximum;
+                }
+            }
+        }
+
+        private void loadMixSetupBtn_Click(object sender, EventArgs e)
+        {
+            // TODO Better XML handling
+
+            string path;
+            OpenFileDialog file = new OpenFileDialog();
+            file.Filter = "Mix setup .xml files (*.xml)|*.xml";
+            if (file.ShowDialog() == DialogResult.OK)
+            {
+                path = file.FileName;
+
+                handlingProperties = IoUtils.FromXML<List<PropData>>(File.ReadAllText(path));
+                datagrid.DataSource = handlingProperties;
+
+                isDatagridDirty = false;
+            }
+        }
+
+        private void saveMixSetupBtn_Click(object sender, EventArgs e)
+        {
+            // Save XML and set isDatagridDirty to false if successful
+
+            SaveMixSetup();
+        }
+
+        private bool SaveMixSetup()
+        {
             SaveFileDialog saveDlg = new SaveFileDialog();
 
-            saveDlg.Filter = "Handling .meta files (*.meta)|*.meta";
-            saveDlg.FileName = "handling.meta";
+            saveDlg.Filter = "Mix setup .xml files (*.xml)|*.xml";
+            saveDlg.FileName = "mixSetup.xml";
             if (saveDlg.ShowDialog() == DialogResult.OK)
             {
                 var path = saveDlg.FileName;
-                var resultXml = mixer.generateMixedHandling();
+
+                var resultXml = IoUtils.ToXML<List<PropData>>(handlingProperties);
 
                 File.WriteAllText(path, resultXml);
-                MessageBox.Show("Done!");
+                MessageBox.Show("File saved");
+
+                isDatagridDirty = false;
+
+                return true;
             }
-            
+
+            return false;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(isDatagridDirty)
+            {
+                var result = MessageBox.Show("Mix setup can be saved for later usage. Save changes?", "Changes are not saved.", MessageBoxButtons.YesNoCancel);
+
+                if(result == DialogResult.No)
+                {
+                    return;
+                }
+                else
+                {
+                    e.Cancel = true;
+                    
+                    if(result == DialogResult.Yes)
+                    {
+                        if(SaveMixSetup())
+                        {
+                            e.Cancel = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void datagrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            isDatagridDirty = true;
+        }
+
+        // Display Info tooltip
+        private void datagrid_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            String helpString = getTooltipHelpString(datagrid.CurrentCell);
+            var column = datagrid.CurrentCell.OwningColumn;
+
+            var cell = datagrid.CurrentCell;
+
+            int xOffset = 0;
+            int yOffset = cell.Size.Height;
+
+            if(column.GetType() == typeof(DataGridViewComboBoxColumn))
+            {
+                xOffset = cell.Size.Width;
+                yOffset = 10;
+            }
+
+            var cellDisplayRect = datagrid.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+            helpTooltip.Show(helpString,
+                          datagrid,
+                          //cellDisplayRect.X + cell.Size.Width / 2,
+                          //cellDisplayRect.Y + cell.Size.Height / 2,
+                          cellDisplayRect.X + xOffset,
+                          cellDisplayRect.Y + yOffset,
+                          2000000);
+        }
+
+        private string getTooltipHelpString(DataGridViewCell currentCell)
+        {
+            var owningColumn = currentCell.OwningColumn;
+
+            var key = "";
+            if (owningColumn == mixType)
+            {
+                key = Metadata.MIXTYPE_COL;
+            } 
+            else if(owningColumn == mixedValue)
+            {
+                key = Metadata.MIXEDVAL_COL;
+            }
+            else if (owningColumn == valueOffsetCol)
+            {
+                key = Metadata.VALOFFSET_COL;
+            }
+            else if (owningColumn == ValueMultiplierCol)
+            {
+                key = Metadata.VALMULT_COL;
+            }
+            else if (owningColumn == customFormulaCol)
+            {
+                key = Metadata.CUSTOMFORM_COL;
+            }
+            else if (owningColumn == MinimumValueCol)
+            {
+                key = Metadata.MINVAL_COL;
+            }
+            else if (owningColumn == MaximumValueCol)
+            {
+                key = Metadata.MAXVAL_COL;
+            }
+
+            return Metadata.getHelpStringForColumn(key);
+        }
+
+        // Hide tooltip
+        private void datagrid_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            HideHelpTooltip();
+        }
+
+        private void datagrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            HideHelpTooltip();
+        }
+
+        private void datagrid_MouseLeave(object sender, EventArgs e)
+        {
+            HideHelpTooltip();
+        }
+
+        private void HideHelpTooltip()
+        {
+            if (helpTooltip.Active)
+            {
+                helpTooltip.Hide(this);
+            }
+        }
+
+        private void showTooltipsCB_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.ShowHelpTooltips = showTooltipsCB.Checked;
+        }
+
+        private void selectAllBtn_Click(object sender, EventArgs e)
+        {
+            datagrid.SelectAll();
+        }
+
+        private void SelectNoneBtn_Click(object sender, EventArgs e)
+        {
+            datagrid.ClearSelection();
         }
     }
 }
