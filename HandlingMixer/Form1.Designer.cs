@@ -40,6 +40,9 @@
             this.labelA = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.mixGroup = new System.Windows.Forms.GroupBox();
+            this.showTooltipsCB = new System.Windows.Forms.CheckBox();
+            this.SelectNoneBtn = new System.Windows.Forms.Button();
+            this.selectAllBtn = new System.Windows.Forms.Button();
             this.setValueSelBtn = new System.Windows.Forms.Button();
             this.setTypeSelBtn = new System.Windows.Forms.Button();
             this.selectedLabel = new System.Windows.Forms.Label();
@@ -68,9 +71,6 @@
             this.setMinimumValueMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.selectAllBtn = new System.Windows.Forms.Button();
-            this.SelectNoneBtn = new System.Windows.Forms.Button();
-            this.showTooltipsCB = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -194,6 +194,42 @@
             this.mixGroup.TabStop = false;
             this.mixGroup.Text = "Mix rules";
             // 
+            // showTooltipsCB
+            // 
+            this.showTooltipsCB.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.showTooltipsCB.AutoSize = true;
+            this.showTooltipsCB.Checked = true;
+            this.showTooltipsCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showTooltipsCB.Location = new System.Drawing.Point(289, 22);
+            this.showTooltipsCB.Name = "showTooltipsCB";
+            this.showTooltipsCB.Size = new System.Drawing.Size(119, 17);
+            this.showTooltipsCB.TabIndex = 9;
+            this.showTooltipsCB.Text = "Display help tooltips";
+            this.showTooltipsCB.UseVisualStyleBackColor = true;
+            this.showTooltipsCB.CheckedChanged += new System.EventHandler(this.showTooltipsCB_CheckedChanged);
+            // 
+            // SelectNoneBtn
+            // 
+            this.SelectNoneBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.SelectNoneBtn.Location = new System.Drawing.Point(498, 17);
+            this.SelectNoneBtn.Name = "SelectNoneBtn";
+            this.SelectNoneBtn.Size = new System.Drawing.Size(74, 23);
+            this.SelectNoneBtn.TabIndex = 8;
+            this.SelectNoneBtn.Text = "Select None";
+            this.SelectNoneBtn.UseVisualStyleBackColor = true;
+            this.SelectNoneBtn.Click += new System.EventHandler(this.SelectNoneBtn_Click);
+            // 
+            // selectAllBtn
+            // 
+            this.selectAllBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.selectAllBtn.Location = new System.Drawing.Point(417, 17);
+            this.selectAllBtn.Name = "selectAllBtn";
+            this.selectAllBtn.Size = new System.Drawing.Size(74, 23);
+            this.selectAllBtn.TabIndex = 7;
+            this.selectAllBtn.Text = "Select All";
+            this.selectAllBtn.UseVisualStyleBackColor = true;
+            this.selectAllBtn.Click += new System.EventHandler(this.selectAllBtn_Click);
+            // 
             // setValueSelBtn
             // 
             this.setValueSelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -255,6 +291,7 @@
             this.datagrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagrid_CellEndEdit);
             this.datagrid.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagrid_CellEnter);
             this.datagrid.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagrid_CellLeave);
+            this.datagrid.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.datagrid_CellValidating);
             this.datagrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagrid_CellValueChanged);
             this.datagrid.SelectionChanged += new System.EventHandler(this.datagrid_SelectionChanged);
             this.datagrid.MouseLeave += new System.EventHandler(this.datagrid_MouseLeave);
@@ -448,42 +485,6 @@
             // 
             this.helpTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.helpTooltip.ToolTipTitle = "Info";
-            // 
-            // selectAllBtn
-            // 
-            this.selectAllBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.selectAllBtn.Location = new System.Drawing.Point(417, 17);
-            this.selectAllBtn.Name = "selectAllBtn";
-            this.selectAllBtn.Size = new System.Drawing.Size(74, 23);
-            this.selectAllBtn.TabIndex = 7;
-            this.selectAllBtn.Text = "Select All";
-            this.selectAllBtn.UseVisualStyleBackColor = true;
-            this.selectAllBtn.Click += new System.EventHandler(this.selectAllBtn_Click);
-            // 
-            // SelectNoneBtn
-            // 
-            this.SelectNoneBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.SelectNoneBtn.Location = new System.Drawing.Point(498, 17);
-            this.SelectNoneBtn.Name = "SelectNoneBtn";
-            this.SelectNoneBtn.Size = new System.Drawing.Size(74, 23);
-            this.SelectNoneBtn.TabIndex = 8;
-            this.SelectNoneBtn.Text = "Select None";
-            this.SelectNoneBtn.UseVisualStyleBackColor = true;
-            this.SelectNoneBtn.Click += new System.EventHandler(this.SelectNoneBtn_Click);
-            // 
-            // showTooltipsCB
-            // 
-            this.showTooltipsCB.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.showTooltipsCB.AutoSize = true;
-            this.showTooltipsCB.Checked = true;
-            this.showTooltipsCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showTooltipsCB.Location = new System.Drawing.Point(289, 22);
-            this.showTooltipsCB.Name = "showTooltipsCB";
-            this.showTooltipsCB.Size = new System.Drawing.Size(119, 17);
-            this.showTooltipsCB.TabIndex = 9;
-            this.showTooltipsCB.Text = "Display help tooltips";
-            this.showTooltipsCB.UseVisualStyleBackColor = true;
-            this.showTooltipsCB.CheckedChanged += new System.EventHandler(this.showTooltipsCB_CheckedChanged);
             // 
             // Form1
             // 

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Serialization;
+using SimpleExpressionEvaluator;
 
 namespace HandlingMixer
 {
@@ -27,7 +28,7 @@ namespace HandlingMixer
     public class DialogUtils
     {
 
-        public static DialogResult StringInputBox(string title, string promptText, ref string value, string tooltipHelp = "")
+        public static DialogResult StringInputBox(string title, string promptText, ref string value, string tooltipHelp = "", InputValidation validation = null)
         {
             Form form = new Form();
             Label label = new Label();
@@ -63,6 +64,23 @@ namespace HandlingMixer
             form.MaximizeBox = false;
             form.AcceptButton = buttonOk;
             form.CancelButton = buttonCancel;
+
+            if(validation != null)
+            {
+                form.FormClosing += delegate (object sender, FormClosingEventArgs e) {
+                    if (form.DialogResult == DialogResult.OK)
+                    {
+                        string errorText = validation(textBox.Text);
+                        if ((errorText != ""))
+                        {
+                            e.Cancel = true;
+                            MessageBox.Show(form, errorText, "Validation Error",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            textBox.Focus();
+                        }
+                    }
+                };
+            }
 
             form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
 
@@ -263,11 +281,50 @@ namespace HandlingMixer
                 e.Handled = true;
         }
 
-        public delegate string InputBoxValidation(string errorMessage);
+        public delegate string InputValidation(string value);
 
-        public static InputBoxValidation NotEmptyValidation = delegate (string val) {
+        public static InputValidation NotEmptyValidation = delegate (string val) {
             if (val == "")
                 return "Value cannot be empty.";
+            return "";
+        };
+
+        public static InputValidation ValidCustomFormula = delegate (string val) {
+            if (val == "")
+                return "";
+            else
+            {
+                dynamic ev = new ExpressionEvaluator(CultureInfo.InvariantCulture);
+
+                Decimal x = 5;
+                float a = 5f;
+                float b = 5f;
+
+                try
+                {
+                    var test = ev.Evaluate(val, x: x, a: a, b: b);
+                }
+                catch(Exception e)
+                {
+                    return "There was an error while parsing the custom formula: " + e.Message;
+                }
+                
+
+                return "";
+            }
+        };
+
+        public static InputValidation ValidFloatAsString = delegate (string val) {
+            if (String.IsNullOrWhiteSpace(val))
+                return "";
+
+            float f;
+
+            if (!float.TryParse(val, out f))
+            {
+                return "Value must be a valid float or empty";
+            }
+
             return "";
         };
     }

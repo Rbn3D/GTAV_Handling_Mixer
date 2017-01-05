@@ -14,12 +14,24 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 * Value custom formula (supporting math expressions) (Doc link TODO)
 * Value minimum
 * Value Maximum
+
 #### Other features
 * Contextual help: As you edit value modifiers, a tooltip helps you to know what the modifier does etc. This can be configured.
 * Load/save Mix setup: As well as generate a handling.meta file, Handling Mixer can also save the mix setup you did for later usage.
 
 ### Download 
 	(TODO)
+
+### How to compile from source
+* Requirements
+	Windows
+	Visual Studio 2015
+*Dependencies (DLL References)
+	https://github.com/Rbn3D/Math-Expression-Evaluator
+
+After fix references, just build solution and you're done
+
+## Contributions are welcome!
 
 ### F.A.Q.
 * **Q**: I just have one handling file, don't want to mix between two, but quickly tune some properties, can this be done?

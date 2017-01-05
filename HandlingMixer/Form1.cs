@@ -228,7 +228,7 @@ namespace HnadlingMixer
         private void setCustomFormulaMenu_Click(object sender, EventArgs e)
         {
             string customFormula = "";
-            var result = DialogUtils.StringInputBox("Set custom formula", "Set custom formula for selected items", ref customFormula, Metadata.getHelpStringForColumn(Metadata.CUSTOMFORM_COL));
+            var result = DialogUtils.StringInputBox("Set custom formula", "Set custom formula for selected items", ref customFormula, Metadata.getHelpStringForColumn(Metadata.CUSTOMFORM_COL), DialogUtils.ValidCustomFormula);
 
             if (result == DialogResult.OK)
             {
@@ -446,6 +446,33 @@ namespace HnadlingMixer
         private void SelectNoneBtn_Click(object sender, EventArgs e)
         {
             datagrid.ClearSelection();
+        }
+
+        private void datagrid_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            var col = datagrid[e.ColumnIndex, e.RowIndex].OwningColumn;
+            var value = e.FormattedValue as String;
+
+            String errorMsg = null;
+
+            if (col == MinimumValueCol || col == MaximumValueCol)
+            {
+                errorMsg = DialogUtils.ValidFloatAsString(value);
+                if (!String.IsNullOrEmpty(errorMsg))
+                {
+                    e.Cancel = true;
+                }
+            }
+            else if (col == customFormulaCol)
+            {
+                errorMsg = DialogUtils.ValidCustomFormula(value);
+                if (!String.IsNullOrEmpty(errorMsg))
+                {
+                    e.Cancel = true;
+                }
+            }
+
+            datagrid[e.ColumnIndex, e.RowIndex].ErrorText = errorMsg;
         }
     }
 }
