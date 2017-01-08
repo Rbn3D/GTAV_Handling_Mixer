@@ -25,6 +25,8 @@ namespace HandlingMixer
             Mix,
             UseA,
             UseB,
+            UseMin,
+            UseMax,
             FixedValue
         }
 
@@ -98,9 +100,11 @@ namespace HandlingMixer
                     @"Mix type: This modifier determines how values from A and B handling files will be mixed for the current handling property.
 
 Possible values are:
- - Mix: Use to linearly interpolate value between A and B handling
- - Use A: Take value from A handling (no interpolation)
- - Use B: Take value from B handling (no interpolation)
+ - Mix: Use to linearly interpolate value between A and B handling for the current property
+ - Use A: Take value from A handling for the current property (no interpolation)
+ - Use B: Take value from B handling for the current property (no interpolation)
+ - Use Max: Take value from those handling that as a higher value for the current property (no interpolation)
+ - Use Min: Take value from those handling that as a lower value for the current property (no interpolation)
  - Fixed Value: (NOT RECOMENDED) Specify a fixed value for this property (this will effectively make all vehicles have the same value for this property)
 ";
             } 

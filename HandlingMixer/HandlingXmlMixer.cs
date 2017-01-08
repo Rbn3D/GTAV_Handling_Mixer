@@ -91,6 +91,14 @@ namespace HandlingMixer
                         {
                             mixedValue = BValue;
                         }
+                        else if (pDataType == MixType.UseMin)
+                        {
+                            mixedValue = Math.Min(AValue, BValue);
+                        }
+                        else if (pDataType == MixType.UseMax)
+                        {
+                            mixedValue = Math.Max(AValue, BValue);
+                        }
 
                         mixedValue = processAditionalMathColumns(mixedValue, AValue, BValue, mixProp);
 
