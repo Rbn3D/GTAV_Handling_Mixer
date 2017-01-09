@@ -8,6 +8,8 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 * Mix value Factor => Interpotate property
 * Use A => Take value from A handling
 * Use B => Take value from B handling
+* Use Min => Take value from those handling that as a higher value for the current property
+* Use Max => Take value from those handling that as a lower value for the current property
 * Fixed Value.
 * Value Offset
 * Value Multiplier
