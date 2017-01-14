@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using HandlingMixer.Controls.Datagrid;
 using static HandlingMixer.Metadata;
 using System.Threading;
+using SimpleLogger;
 
 namespace HnadlingMixer
 {
@@ -23,6 +24,7 @@ namespace HnadlingMixer
         public string Bpath;
 
         public List<PropData> handlingProperties;
+        public BaseHandlingFile baseHandling = BaseHandlingFile.UseA;
 
         public bool isDatagridDirty = false;
 
@@ -56,6 +58,12 @@ namespace HnadlingMixer
             mixedValue.ReadOnly = false;
 
             datagrid.DataSource = handlingProperties;
+
+            baseHandlingFileCb.DataSource = Enum.GetValues(typeof(BaseHandlingFile));
+            baseHandlingFileCb.DropDownStyle = ComboBoxStyle.DropDownList;
+            baseHandlingFileCb.SelectedIndex = 0;
+
+            LogUtils.initializeLogger();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -107,11 +115,12 @@ namespace HnadlingMixer
                 {
                     var path = saveDlg.FileName;
 
-                    var mixer = new HandlingXmlMixer(Apath, Bpath, handlingProperties);
+                    var mixer = new HandlingXmlMixer(Apath, Bpath, handlingProperties, baseHandling);
                     var resultXml = mixer.generateMixedHandling();
 
                     File.WriteAllText(path, resultXml);
-                    MessageBox.Show("Done!");
+                    Logger.Log("Mixed handling saved to: " + path);
+                    DialogUtils.ShowMixDoneDialog();
                 }
             }
         }
@@ -481,6 +490,16 @@ namespace HnadlingMixer
             }
 
             datagrid[e.ColumnIndex, e.RowIndex].ErrorText = errorMsg;
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void baseHandlingFileCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            baseHandling = (BaseHandlingFile)Enum.Parse(typeof(BaseHandlingFile), baseHandlingFileCb.SelectedValue.ToString());
         }
     }
 }

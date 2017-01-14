@@ -35,6 +35,12 @@ namespace HandlingMixer
             Float, Int, Vector3
         }
 
+        public enum BaseHandlingFile
+        {
+            UseA,
+            UseB
+        }
+
         public static List<PropData> getHandlingProperties()
         {
             List<PropData> properties = new List<PropData>();

@@ -71,6 +71,9 @@
             this.setMinimumValueMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.baseHandlingFileCb = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -79,10 +82,12 @@
             this.panel3.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.setValuesMenu.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.panel4);
             this.groupBox1.Controls.Add(this.panel2);
             this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -95,11 +100,11 @@
             // 
             // panel2
             // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.btnFileB);
             this.panel2.Controls.Add(this.labelB);
             this.panel2.Controls.Add(this.label2);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(634, 16);
+            this.panel2.Location = new System.Drawing.Point(342, 16);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(266, 163);
             this.panel2.TabIndex = 1;
@@ -486,6 +491,37 @@
             this.helpTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.helpTooltip.ToolTipTitle = "Info";
             // 
+            // panel4
+            // 
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel4.Controls.Add(this.label3);
+            this.panel4.Controls.Add(this.baseHandlingFileCb);
+            this.panel4.Location = new System.Drawing.Point(614, 16);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(283, 160);
+            this.panel4.TabIndex = 2;
+            // 
+            // baseHandlingFileCb
+            // 
+            this.baseHandlingFileCb.FormattingEnabled = true;
+            this.baseHandlingFileCb.Location = new System.Drawing.Point(130, 19);
+            this.baseHandlingFileCb.Name = "baseHandlingFileCb";
+            this.baseHandlingFileCb.Size = new System.Drawing.Size(121, 21);
+            this.baseHandlingFileCb.TabIndex = 0;
+            this.baseHandlingFileCb.SelectedIndexChanged += new System.EventHandler(this.baseHandlingFileCb_SelectedIndexChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(90, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Base handling file";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -508,6 +544,8 @@
             this.panel3.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);
             this.setValuesMenu.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -555,6 +593,9 @@
         private System.Windows.Forms.Button SelectNoneBtn;
         private System.Windows.Forms.Button selectAllBtn;
         private System.Windows.Forms.CheckBox showTooltipsCB;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox baseHandlingFileCb;
     }
 }
 

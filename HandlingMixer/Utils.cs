@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml.Serialization;
 using SimpleExpressionEvaluator;
+using SimpleLogger;
+using SimpleLogger.Logging.Handlers;
+using System.Diagnostics;
 
 namespace HandlingMixer
 {
@@ -27,6 +30,49 @@ namespace HandlingMixer
 
     public class DialogUtils
     {
+        public static DialogResult ShowMixDoneDialog()
+        {
+            Form form = new Form();
+            Label label = new Label();
+            Button showLogBtn = new Button();
+            Button buttonOk = new Button();
+
+            form.Text = "Mix Done!";
+            label.Text = "Mix done successfully";
+            showLogBtn.Text = "Display log";
+
+            showLogBtn.Click += ShowLogBtn_Click;
+
+            buttonOk.Text = "OK";
+            buttonOk.DialogResult = DialogResult.OK;
+
+            label.SetBounds(9, 20, 372, 13);
+            showLogBtn.SetBounds(12, 36, 372, 20);
+            buttonOk.SetBounds(228, 72, 75, 23);
+
+            label.AutoSize = true;
+            showLogBtn.Anchor = showLogBtn.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(396, 107);
+            form.Controls.AddRange(new Control[] { label, showLogBtn, buttonOk });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+
+            //form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
+
+            DialogResult dialogResult = form.ShowDialog();
+            return dialogResult;
+        }
+
+        private static void ShowLogBtn_Click(object sender, EventArgs e)
+        {
+            LogUtils.displayLog();
+        }
 
         public static DialogResult StringInputBox(string title, string promptText, ref string value, string tooltipHelp = "", InputValidation validation = null)
         {
@@ -348,6 +394,26 @@ namespace HandlingMixer
                 xmlSerializer.Serialize(stringWriter, obj);
                 return stringWriter.ToString();
             }
+        }
+    }
+
+    public class LogUtils
+    {
+        public static void initializeLogger()
+        {
+            Logger.LoggerHandlerManager.AddHandler(new FileLoggerHandler(getLogFilename()));
+        }
+
+        public static void displayLog()
+        {
+            var fInfo = new FileInfo(getLogFilename());
+            if(fInfo.Exists)
+                Process.Start(getLogFilename());
+        }
+
+        private static string getLogFilename()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "HandlingMixerLog.txt");
         }
     }
 }

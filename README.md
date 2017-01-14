@@ -32,6 +32,7 @@ Handling Mixer is a tool that allows to generate handling.meta files from 2 diff
 * Dependencies (DLL References)
 
 https://github.com/Rbn3D/Math-Expression-Evaluator
+https://github.com/jirkapenzes/SimpleLogger
 
 After fix references, just build solution and you're done
 

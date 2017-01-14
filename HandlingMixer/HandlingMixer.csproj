@@ -55,6 +55,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\SimpleExpressionEvaluator.dll</HintPath>
     </Reference>
+    <Reference Include="SimpleLogger">
+      <HintPath>..\lib\SimpleLogger.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
