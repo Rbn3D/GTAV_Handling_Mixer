@@ -16,8 +16,8 @@ namespace HandlingMixer.Tests
         [TestMethod()]
         public void LerpTest()
         {
-            Assert.AreEqual(MathUtils.Lerp(0f, 1f, 0.5f), 0.5f);
-            Assert.AreEqual(MathUtils.Lerp(1f, 0f, 0.5f), 0.5f);
+            Assert.AreEqual(MathUtils.Lerp(0m, 1m, 0.5m), 0.5m);
+            Assert.AreEqual(MathUtils.Lerp(1m, 0m, 0.5m), 0.5m);
         }
     }
 

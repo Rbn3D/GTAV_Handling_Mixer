@@ -1,4 +1,4 @@
-﻿using HandlingMixer.Controls;
+﻿extern alias NCalc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using static HandlingMixer.Metadata;
 
 namespace HandlingMixer.Data
 {
-    [Serializable]
+    [System.Serializable]
     public class PropData
     {
         public PropData()
@@ -17,7 +17,7 @@ namespace HandlingMixer.Data
 
         }
 
-        public PropData(string propName, HandlingDataType dataType, MixType mixType, float mixedValue)
+        public PropData(string propName, HandlingDataType dataType, MixType mixType, decimal mixedValue)
         {
             this.propName = propName;
             this.dataType = dataType;
@@ -28,17 +28,17 @@ namespace HandlingMixer.Data
         public string propName { get; set; }
         public HandlingDataType dataType { get; set; }
         public MixType mixType { get; set; }
-        public float mixedValue { get; set; }
+        public decimal mixedValue { get; set; }
 
-        private float _valueOffset = 0f;
-        public float valueOffset
+        private decimal _valueOffset = 0.0m;
+        public decimal valueOffset
         {
             get { return _valueOffset; }
             set { _valueOffset = value; }
         }
 
-        private float _valueMultiplier = 1f;
-        public float ValueMultiplier
+        private decimal _valueMultiplier = 1m;
+        public decimal ValueMultiplier
         {
             get { return _valueMultiplier; }
             set { _valueMultiplier = value; }

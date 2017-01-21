@@ -27,6 +27,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,16 +51,18 @@
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>HandlingMixer.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleExpressionEvaluator, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\SimpleExpressionEvaluator.dll</HintPath>
+    <Reference Include="NCalc">
+      <HintPath>..\lib\NCalc.dll</HintPath>
+      <Aliases>NCalc</Aliases>
     </Reference>
     <Reference Include="SimpleLogger">
       <HintPath>..\lib\SimpleLogger.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -71,11 +74,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Datagrid\DatagridViewSliderColumn.cs" />
-    <Compile Include="Controls\Datagrid\SliderCell.cs" />
-    <Compile Include="Controls\Datagrid\SliderEditingControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Data\PropData.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

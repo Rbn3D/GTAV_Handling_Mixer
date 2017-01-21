@@ -1,7 +1,8 @@
-﻿using HandlingMixer;
-using HandlingMixer.Controls;
+﻿extern alias NCalc;
+
+using HandlingMixer;
 using HandlingMixer.Data;
-using SimpleExpressionEvaluator;
+using NCalc::NCalc;
 using SimpleLogger;
 using System;
 using System.Collections.Generic;
@@ -79,10 +80,10 @@ namespace HandlingMixer
 
                         foreach (var att in attributesToMix)
                         {
-                            var AValue = MathUtils.FloatFromString(carA.Elements(pName).First().Attributes(att).First().Value);
-                            var BValue = MathUtils.FloatFromString(carB.Elements(pName).First().Attributes(att).First().Value);
+                            var AValue = MathUtils.DecimalFromString(carA.Elements(pName).First().Attributes(att).First().Value);
+                            var BValue = MathUtils.DecimalFromString(carB.Elements(pName).First().Attributes(att).First().Value);
 
-                            var mixedValue = 0f;
+                            var mixedValue = 0m;
 
                             if (pDataType == MixType.FixedValue)
                             {
@@ -114,7 +115,7 @@ namespace HandlingMixer
                             // round to int if handling data type should be integer
                             if (mixProp.dataType == HandlingDataType.Int)
                             {
-                                mixedValue = (float)Math.Round((double)mixedValue);
+                                mixedValue = (decimal)Math.Round((double)mixedValue);
                             }
 
                             mixItem.Element(pName).Attribute(att).Value = mixedValue.ToString(CultureInfo.InvariantCulture);
@@ -141,10 +142,10 @@ namespace HandlingMixer
         }
 
         // Process Offset, Multiplier, Custom formula, Minimum, Maximum columns
-        private float processAditionalMathColumns(float mixedValue, float AValue, float BValue, PropData mixProp)
+        private decimal processAditionalMathColumns(decimal mixedValue, decimal AValue, decimal BValue, PropData mixProp)
         {
-            var offset = mixProp.valueOffset;
-            var multiplier = mixProp.ValueMultiplier;
+            decimal offset = mixProp.valueOffset;
+            decimal multiplier = mixProp.ValueMultiplier;
             var customFormula = mixProp.customFormula;
             var min = mixProp.MinimumValue;
             var max = mixProp.MaximumValue;
@@ -158,18 +159,24 @@ namespace HandlingMixer
             // custom formula
             if(!String.IsNullOrWhiteSpace(customFormula))
             {
-                dynamic ev = new ExpressionEvaluator(CultureInfo.InvariantCulture);
+                var expr = new Expression(customFormula);
 
                 Decimal x = 0;
                 Decimal.TryParse(mixedValue.ToString(CultureInfo.InvariantCulture), out x);
 
-                mixedValue = ev.Evaluate(customFormula, x: x, a: AValue, b: BValue);
+                expr.Parameters.Add("x", x);
+                expr.Parameters.Add("a", AValue);
+                expr.Parameters.Add("b", BValue);
+
+                var f = expr.ToLambda<decimal>();
+
+                mixedValue = f();
             }
 
             // min
             if(!String.IsNullOrWhiteSpace(min))
             {
-                var floatMin = MathUtils.FloatFromString(min);
+                var floatMin = MathUtils.DecimalFromString(min);
 
                 if(mixedValue < floatMin)
                 {
@@ -180,7 +187,7 @@ namespace HandlingMixer
             // max
             if (!String.IsNullOrWhiteSpace(max))
             {
-                var floatMax = MathUtils.FloatFromString(max);
+                var floatMax = MathUtils.DecimalFromString(max);
 
                 if (mixedValue > floatMax)
                 {

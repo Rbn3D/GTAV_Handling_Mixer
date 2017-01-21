@@ -1,5 +1,4 @@
 ﻿using HandlingMixer;
-using HandlingMixer.Controls;
 using HandlingMixer.Data;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using HandlingMixer.Controls.Datagrid;
 using static HandlingMixer.Metadata;
 using System.Threading;
 using SimpleLogger;
@@ -54,8 +52,10 @@ namespace HnadlingMixer
             mixType.DataSource = Enum.GetValues(typeof(MixType));
             mixType.ReadOnly = false;
 
-            mixedValue.ValueType = typeof(float);
+            mixedValue.ValueType = typeof(decimal);
             mixedValue.ReadOnly = false;
+
+            customFormulaCol.ValueType = typeof(String);
 
             datagrid.DataSource = handlingProperties;
 
@@ -194,8 +194,8 @@ namespace HnadlingMixer
 
         private void setMixedValue_Click(object sender, EventArgs e)
         {
-            float mixedValue = 0.5f;
-            var result = DialogUtils.FloatInputBox("Set mixed value", "Choose mix type for selected items", ref mixedValue, Metadata.getHelpStringForColumn(Metadata.MIXEDVAL_COL));
+            decimal mixedValue = 0.5m;
+            var result = DialogUtils.DecimalInputBox("Set mixed value", "Choose mix type for selected items", ref mixedValue, Metadata.getHelpStringForColumn(Metadata.MIXEDVAL_COL));
 
             if (result == DialogResult.OK)
             {
@@ -208,8 +208,8 @@ namespace HnadlingMixer
 
         private void setValueOffsetMenu_Click(object sender, EventArgs e)
         {
-            float offset = 0.0f;
-            var result = DialogUtils.FloatInputBox("Set offset value", "Set offset value for selected items", ref offset, Metadata.getHelpStringForColumn(Metadata.VALOFFSET_COL));
+            decimal offset = 0.0m;
+            var result = DialogUtils.DecimalInputBox("Set offset value", "Set offset value for selected items", ref offset, Metadata.getHelpStringForColumn(Metadata.VALOFFSET_COL));
 
             if (result == DialogResult.OK)
             {
@@ -222,8 +222,8 @@ namespace HnadlingMixer
 
         private void setMultiplierMenu_Click(object sender, EventArgs e)
         {
-            float multiplier = 1.0f;
-            var result = DialogUtils.FloatInputBox("Set multiplier value", "Set offset value for selected items", ref multiplier, Metadata.getHelpStringForColumn(Metadata.VALMULT_COL));
+            decimal multiplier = 1.0m;
+            var result = DialogUtils.DecimalInputBox("Set multiplier value", "Set offset value for selected items", ref multiplier, Metadata.getHelpStringForColumn(Metadata.VALMULT_COL));
 
             if (result == DialogResult.OK)
             {
@@ -251,7 +251,7 @@ namespace HnadlingMixer
         private void setMinimumValueMenu_Click(object sender, EventArgs e)
         {
             string minimum = "";
-            var result = DialogUtils.FloatAsStringInputBox("Set minimum value", "Set minimum for selected items", ref minimum, Metadata.getHelpStringForColumn(Metadata.MINVAL_COL));
+            var result = DialogUtils.DecimalAsStringInputBox("Set minimum value", "Set minimum for selected items", ref minimum, Metadata.getHelpStringForColumn(Metadata.MINVAL_COL));
 
             if (result == DialogResult.OK)
             {
@@ -265,7 +265,7 @@ namespace HnadlingMixer
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             string maximum = "";
-            var result = DialogUtils.FloatAsStringInputBox("Set maximum value", "Set maximum for selected items", ref maximum, Metadata.getHelpStringForColumn(Metadata.MAXVAL_COL));
+            var result = DialogUtils.DecimalAsStringInputBox("Set maximum value", "Set maximum for selected items", ref maximum, Metadata.getHelpStringForColumn(Metadata.MAXVAL_COL));
 
             if (result == DialogResult.OK)
             {
@@ -474,7 +474,7 @@ namespace HnadlingMixer
 
             if (col == MinimumValueCol || col == MaximumValueCol)
             {
-                errorMsg = DialogUtils.ValidFloatAsString(value);
+                errorMsg = DialogUtils.ValidDecimalAsString(value);
                 if (!String.IsNullOrEmpty(errorMsg))
                 {
                     e.Cancel = true;

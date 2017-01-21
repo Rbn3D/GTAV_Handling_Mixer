@@ -1,4 +1,6 @@
-﻿using System;
+﻿extern alias NCalc;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -8,23 +10,23 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Serialization;
-using SimpleExpressionEvaluator;
 using SimpleLogger;
 using SimpleLogger.Logging.Handlers;
 using System.Diagnostics;
+using NCalc::NCalc;
 
 namespace HandlingMixer
 {
     public class MathUtils
     {
-        public static float Lerp(float value1, float value2, float amount)
+        public static decimal Lerp(decimal value1, decimal value2, decimal amount)
         {
             return value1 + (value2 - value1) * amount;
         }
 
-        public static float FloatFromString(string value)
+        public static decimal DecimalFromString(string value)
         {
-            return float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
+            return Decimal.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
         }
     }
 
@@ -187,7 +189,7 @@ namespace HandlingMixer
             return dialogResult;
         }
 
-        public static DialogResult FloatInputBox(string title, string promptText, ref float value, string tooltipHelp = "")
+        public static DialogResult DecimalInputBox(string title, string promptText, ref decimal value, string tooltipHelp = "")
         {
             Form form = new Form();
             Label label = new Label();
@@ -243,13 +245,13 @@ namespace HandlingMixer
             form.Shown += (sender, e) => Form_Shown(sender, e, tooltipHelp);
 
             DialogResult dialogResult = form.ShowDialog();
-            value = MathUtils.FloatFromString(textBox.Text);
+            value = MathUtils.DecimalFromString(textBox.Text);
 
             return dialogResult;
         }
 
         // returns string with float value (allowing empty values)
-        public static DialogResult FloatAsStringInputBox(string title, string promptText,  ref string value, string tooltipHelp = "")
+        public static DialogResult DecimalAsStringInputBox(string title, string promptText,  ref string value, string tooltipHelp = "")
         {
             Form form = new Form();
             Label label = new Label();
@@ -336,19 +338,26 @@ namespace HandlingMixer
         };
 
         public static InputValidation ValidCustomFormula = delegate (string val) {
-            if (val == "")
+            if (String.IsNullOrWhiteSpace(val))
                 return "";
             else
             {
-                dynamic ev = new ExpressionEvaluator(CultureInfo.InvariantCulture);
+                // dynamic ev = new ExpressionEvaluator(CultureInfo.InvariantCulture);
+                var expr = new Expression(val);
 
-                Decimal x = 5;
-                float a = 5f;
-                float b = 5f;
+                decimal x = 5m;
+                decimal a = 6m;
+                decimal b = 7m;
+
+                expr.Parameters["x"] = x;
+                expr.Parameters["a"] = a;
+                expr.Parameters["b"] = b;
 
                 try
                 {
-                    var test = ev.Evaluate(val, x: x, a: a, b: b);
+                    Func<decimal> f = expr.ToLambda<decimal>();
+
+                    decimal res = f();
                 }
                 catch(Exception e)
                 {
@@ -360,15 +369,15 @@ namespace HandlingMixer
             }
         };
 
-        public static InputValidation ValidFloatAsString = delegate (string val) {
+        public static InputValidation ValidDecimalAsString = delegate (string val) {
             if (String.IsNullOrWhiteSpace(val))
                 return "";
 
-            float f;
+            decimal f;
 
-            if (!float.TryParse(val, out f))
+            if (!decimal.TryParse(val, out f))
             {
-                return "Value must be a valid float or empty";
+                return "Value must be a valid decimal number or empty";
             }
 
             return "";
